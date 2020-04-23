@@ -1,4 +1,4 @@
-declare module PipelineBuilder {
+declare module MongoPipeline {
   type AnyExpression =
     | Any
     | Group
