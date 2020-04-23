@@ -3,6 +3,7 @@
   "version": "1.0.3",
   "description": "A simple way of create aggregations of mongodb",
   "main": "index.js",
+  "types": "MongoPipeline.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
