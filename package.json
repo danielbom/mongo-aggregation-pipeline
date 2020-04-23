@@ -1,0 +1,19 @@
+{
+  "name": "mongo-pipeline",
+  "version": "1.0.0",
+  "description": "A simple way of create aggregations of mongodb",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "mongo",
+    "aggregate"
+  ],
+  "author": "Daniel A. R. Farina",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/danielbom/mongo-aggregation-pipeline/issues"
+  },
+  "homepage": "https://github.com/danielbom/mongo-aggregation-pipeline#readme"
+}
