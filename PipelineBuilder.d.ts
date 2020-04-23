@@ -14,7 +14,7 @@ declare module MongoPipeline {
   }
 
   interface Aggregator extends Any {
-    async aggregate(pipeline: AnyExpression[]): Any[];
+    aggregate(pipeline: AnyExpression[]): Promise<Any[]>;
   }
 
   interface Group extends Any {
@@ -33,9 +33,9 @@ declare module MongoPipeline {
     includeArrayIndex?: string;
     preserveNullAndEmptyArrays?: Boolean;
   }
-  
+
   interface PipelineBuilder {
-    constructor(pipeline: AnyExpression[] = []);
+    constructor(pipeline: AnyExpression[]);
 
     addFields(expression: Any): this;
     group(expression: Group): this;
@@ -47,7 +47,7 @@ declare module MongoPipeline {
     ): this;
     match(expression: Any): this;
     project(expression: Any): this;
-    unwind(path: string, options: Unwind = {}): this;
+    unwind(path: string, options: Unwind): this;
 
     lookupAndUnwind(
       fromOrExpression: Lookup | string,
@@ -61,8 +61,8 @@ declare module MongoPipeline {
     unwrap(): AnyExpression[];
     selfcopy(): this;
 
-    async aggregateWith(model: Aggregator): Any[];
-    async aggregateOneWith(model: Aggregator): Any;
+    aggregateWith(model: Aggregator): Promise<Any[]>;
+    aggregateOneWith(model: Aggregator): Promise<Any>;
   }
 
   interface Bucket extends Any {
