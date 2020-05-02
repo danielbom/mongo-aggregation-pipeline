@@ -1,6 +1,10 @@
 class PipelineBuilder {
   constructor(pipeline = []) {
-    this._pipeline = pipeline;
+    if (pipeline instanceof PipelineBuilder) {
+      this._pipeline = pipeline.unwrap();
+    } else {
+      this._pipeline = pipeline;
+    }
   }
 
   addFields(expression) {

@@ -64,8 +64,10 @@ declare module MongoPipeline {
     restrictSearchWithMatch: Any;
   }
 
+  type Logger = (pipeline: AnyExpression[]) => void;
+
   interface PipelineBuilder {
-    constructor(pipeline: AnyExpression[]);
+    constructor(pipeline: AnyExpression[] | PipelineBuilder);
 
     addFields(expression: Any): this;
     group(expression: Group): this;
@@ -90,6 +92,7 @@ declare module MongoPipeline {
     push(...operation: AnyExpression[]): this;
     unwrap(): AnyExpression[];
     selfcopy(): this;
+    log(logger?: Logger): this;
 
     aggregateWith(model: Aggregator): Promise<Any[]>;
     aggregateOneWith(model: Aggregator): Promise<Any>;
