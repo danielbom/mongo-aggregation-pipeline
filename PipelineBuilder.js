@@ -19,7 +19,7 @@ class PipelineBuilder {
           localField,
           foreignField,
           as: as || localField,
-        }
+        },
       });
     }
     return this.push({ $lookup: fromOrExpression });
@@ -38,7 +38,7 @@ class PipelineBuilder {
   }
 
   unwindPreserveNulls(path, options = {}) {
-    return this.unwind(path, { ...options, preserveNullAndEmptyArrays: true })
+    return this.unwind(path, { ...options, preserveNullAndEmptyArrays: true });
   }
 
   lookupAndUnwind(
@@ -82,6 +82,15 @@ class PipelineBuilder {
 
   selfcopy() {
     return new PipelineBuilder(this.unwrap());
+  }
+
+  log(logger = null) {
+    if (typeof logger === "function") {
+      logger(this.unwrap());
+    } else {
+      console.log(JSON.stringify(this._pipeline, null, 2));
+    }
+    return this;
   }
 
   async aggregateWith(model) {
