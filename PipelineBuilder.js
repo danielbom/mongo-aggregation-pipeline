@@ -37,6 +37,10 @@ class PipelineBuilder {
     return this.push({ $unwind: { path, ...options } });
   }
 
+  unwindPreserveNulls(path, options = {}) {
+    return this.unwind(path, { ...options, preserveNullAndEmptyArrays: true })
+  }
+
   lookupAndUnwind(
     fromOrExpression,
     localField,
@@ -50,6 +54,21 @@ class PipelineBuilder {
     }
     this.lookup(fromOrExpression);
     return this.unwind(`$${fromOrExpression.as}`, localField);
+  }
+
+  lookupAndUnwindPreserveNulls(
+    fromOrExpression,
+    localField,
+    foreignField,
+    as,
+    unwindOptions
+  ) {
+    if (typeof fromOrExpression === "string") {
+      this.lookup(fromOrExpression, localField, foreignField, as);
+      return this.unwindPreserveNulls(`$${as}`, unwindOptions);
+    }
+    this.lookup(fromOrExpression);
+    return this.unwindPreserveNulls(`$${fromOrExpression.as}`, localField);
   }
 
   push(...operation) {

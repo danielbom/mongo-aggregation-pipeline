@@ -34,37 +34,6 @@ declare module MongoPipeline {
     preserveNullAndEmptyArrays?: Boolean;
   }
 
-  interface PipelineBuilder {
-    constructor(pipeline: AnyExpression[]);
-
-    addFields(expression: Any): this;
-    group(expression: Group): this;
-    lookup(
-      fromOrExpression: Lookup | string,
-      localField?: string,
-      foreighField?: string,
-      as?: string
-    ): this;
-    match(expression: Any): this;
-    project(expression: Any): this;
-    unwind(path: string, options: Unwind): this;
-
-    lookupAndUnwind(
-      fromOrExpression: Lookup | string,
-      localField?: Unwind | string,
-      foreighField?: string,
-      as?: string,
-      unwindOptions?: Unwind
-    ): this;
-
-    push(...operation: AnyExpression[]): this;
-    unwrap(): AnyExpression[];
-    selfcopy(): this;
-
-    aggregateWith(model: Aggregator): Promise<Any[]>;
-    aggregateOneWith(model: Aggregator): Promise<Any>;
-  }
-
   interface Bucket extends Any {
     groupBy: Any;
     boundaries: Any[];
@@ -95,7 +64,36 @@ declare module MongoPipeline {
     restrictSearchWithMatch: Any;
   }
 
-  interface PipelineBuilderComplete extends PipelineBuilder {
+  interface PipelineBuilder {
+    constructor(pipeline: AnyExpression[]);
+
+    addFields(expression: Any): this;
+    group(expression: Group): this;
+    lookup(
+      fromOrExpression: Lookup | string,
+      localField?: string,
+      foreighField?: string,
+      as?: string
+    ): this;
+    match(expression: Any): this;
+    project(expression: Any): this;
+    unwind(path: string, options: Unwind): this;
+
+    lookupAndUnwind(
+      fromOrExpression: Lookup | string,
+      localField?: Unwind | string,
+      foreighField?: string,
+      as?: string,
+      unwindOptions?: Unwind
+    ): this;
+
+    push(...operation: AnyExpression[]): this;
+    unwrap(): AnyExpression[];
+    selfcopy(): this;
+
+    aggregateWith(model: Aggregator): Promise<Any[]>;
+    aggregateOneWith(model: Aggregator): Promise<Any>;
+
     bucket(expression: Bucket): this;
     bucketAuto(expression: BucketAuto): this;
     colStat(expression: ColStat): this;
@@ -115,3 +113,6 @@ declare module MongoPipeline {
     sortByCount(expression: Any): this;
   }
 }
+
+export = MongoPipeline;
+export as namespace MongoPipeline;
