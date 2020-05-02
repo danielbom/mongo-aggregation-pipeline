@@ -14,10 +14,12 @@ class PipelineBuilder {
   lookup(fromOrExpression, localField, foreignField, as) {
     if (typeof fromOrExpression === "string") {
       return this.push({
-        from: fromOrExpression,
-        localField,
-        foreignField,
-        as: as || localField,
+        $lookup: {
+          from: fromOrExpression,
+          localField,
+          foreignField,
+          as: as || localField,
+        }
       });
     }
     return this.push({ $lookup: fromOrExpression });
