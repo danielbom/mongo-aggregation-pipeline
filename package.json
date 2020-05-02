@@ -1,6 +1,6 @@
 {
   "name": "mongo-pipeline",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "A simple way of create aggregations of mongodb",
   "main": "index.js",
   "types": "MongoPipeline.d.ts",
