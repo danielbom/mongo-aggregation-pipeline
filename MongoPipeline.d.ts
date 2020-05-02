@@ -51,7 +51,7 @@ declare module MongoPipeline {
 
     lookupAndUnwind(
       fromOrExpression: Lookup | string,
-      localField?: string,
+      localField?: Unwind | string,
       foreighField?: string,
       as?: string,
       unwindOptions?: Unwind

@@ -11,18 +11,16 @@ class PipelineBuilder {
     return this.push({ $group: expression });
   }
 
-  lookup(fromOrExpression, localField, foreighField, as) {
-    const expression =
-      typeof fromOrExpression === "string"
-        ? {
-            from: fromOrExpression,
-            localField,
-            foreighField,
-            as: as || localField,
-          }
-        : fromOrExpression;
-
-    return this.push({ $lookup: expression });
+  lookup(fromOrExpression, localField, foreignField, as) {
+    if (typeof fromOrExpression === "string") {
+      return this.push({
+        from: fromOrExpression,
+        localField,
+        foreignField,
+        as: as || localField,
+      });
+    }
+    return this.push({ $lookup: fromOrExpression });
   }
 
   match(expression) {
@@ -34,20 +32,22 @@ class PipelineBuilder {
   }
 
   unwind(path, options = {}) {
-    return this.push({ $unwind: { path }, ...options });
+    return this.push({ $unwind: { path, ...options } });
   }
 
   lookupAndUnwind(
     fromOrExpression,
     localField,
-    foreighField,
+    foreignField,
     as,
     unwindOptions
   ) {
-    as = typeof fromOrExpression === "string" ? localField : as;
-    this.lookup(fromOrExpression, localField, foreighField, as);
-    this.unwind(`$${as}`, unwindOptions);
-    return this;
+    if (typeof fromOrExpression === "string") {
+      this.lookup(fromOrExpression, localField, foreignField, as);
+      return this.unwind(`$${as}`, unwindOptions);
+    }
+    this.lookup(fromOrExpression);
+    return this.unwind(`$${fromOrExpression.as}`, localField);
   }
 
   push(...operation) {
