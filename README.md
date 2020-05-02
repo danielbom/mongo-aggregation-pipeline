@@ -17,3 +17,4 @@ const collection = await pipeline
   .aggregateOneWith(mongoose.model('Collection'));
 ```
 
+See others examples in [test repository](https://github.com/danielbom/mongo-aggregation-pipeline-test).
