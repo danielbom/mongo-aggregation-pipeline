@@ -1,4 +1,13 @@
+const op = require("./Operations");
+
 class PipelineBuilder {
+  static get GROUP_FIELDS_ROOT() {
+    return "root";
+  }
+  static get op() {
+    return op;
+  }
+
   constructor(pipeline = []) {
     if (pipeline instanceof PipelineBuilder) {
       this._pipeline = pipeline.unwrap();
@@ -8,41 +17,105 @@ class PipelineBuilder {
   }
 
   addFields(expression) {
-    return this.push({ $addFields: expression });
+    return this.push(op.addFields(expression));
   }
 
   group(expression) {
-    return this.push({ $group: expression });
-  }
-
-  lookup(fromOrExpression, localField, foreignField, as) {
-    if (typeof fromOrExpression === "string") {
-      return this.push({
-        $lookup: {
-          from: fromOrExpression,
-          localField,
-          foreignField,
-          as: as || localField,
-        },
-      });
-    }
-    return this.push({ $lookup: fromOrExpression });
+    return this.push(op.group(expression));
   }
 
   match(expression) {
-    return this.push({ $match: expression });
+    return this.push(op.match(expression));
   }
 
   project(expression) {
-    return this.push({ $project: expression });
+    return this.push(op.project(expression));
   }
 
   unwind(path, options = {}) {
-    return this.push({ $unwind: { path, ...options } });
+    return this.push(op.unwind(path, options));
   }
 
   unwindPreserveNulls(path, options = {}) {
-    return this.unwind(path, { ...options, preserveNullAndEmptyArrays: true });
+    return this.push(op.unwindPreserveNulls(path, options));
+  }
+
+  lookup(fromOrExpression, localField, foreignField, as) {
+    return this.push(op.lookup(fromOrExpression, localField, foreignField, as));
+  }
+
+  bucket(expression) {
+    return this.push(op.bucket(expression));
+  }
+
+  bucketAuto(expression) {
+    return this.push(op.bucketAuto(expression));
+  }
+
+  colStat(expression) {
+    return this.push(op.colStat(expression));
+  }
+
+  count(field) {
+    return this.push(op.count(field));
+  }
+
+  facet(expression) {
+    return this.push(op.facet(expression));
+  }
+
+  geoNear(expression) {
+    return this.push(op.geoNear(expression));
+  }
+
+  graphLookup(expression) {
+    return this.push(op.graphLookup(expression));
+  }
+
+  indexStat() {
+    return this.push(op.indexStat());
+  }
+
+  limit(number) {
+    return this.push(op.limit(number));
+  }
+
+  out(collectionName) {
+    return this.push(op.out(collectionName));
+  }
+
+  redact(expression) {
+    return this.push(op.redact(expression));
+  }
+
+  replaceRoot(newRoot) {
+    return this.push(op.replaceRoot(newRoot));
+  }
+
+  sample(size) {
+    return this.push(op.sample(size));
+  }
+
+  searchBeta(index, search, highlight) {
+    return this.push(op.searchBeta(index, search, highlight));
+  }
+
+  skip(number) {
+    return this.push(op.skip(number));
+  }
+
+  sort(expression) {
+    return this.push(op.sort(expression));
+  }
+
+  sortByCount(expression) {
+    return this.push(op.sortByCount(expression));
+  }
+
+  groupFields(_id, field, ...fields) {
+    return this.push(
+      ...op.groupFields(this.GROUP_FIELDS_ROOT, _id, field, ...fields)
+    );
   }
 
   lookupAndUnwind(
@@ -52,12 +125,15 @@ class PipelineBuilder {
     as,
     unwindOptions
   ) {
-    if (typeof fromOrExpression === "string") {
-      this.lookup(fromOrExpression, localField, foreignField, as);
-      return this.unwind(`$${as}`, unwindOptions);
-    }
-    this.lookup(fromOrExpression);
-    return this.unwind(`$${fromOrExpression.as}`, localField);
+    return this.push(
+      ...op.lookupAndUnwind(
+        fromOrExpression,
+        localField,
+        foreignField,
+        as,
+        unwindOptions
+      )
+    );
   }
 
   lookupAndUnwindPreserveNulls(
@@ -67,12 +143,15 @@ class PipelineBuilder {
     as,
     unwindOptions
   ) {
-    if (typeof fromOrExpression === "string") {
-      this.lookup(fromOrExpression, localField, foreignField, as);
-      return this.unwindPreserveNulls(`$${as}`, unwindOptions);
-    }
-    this.lookup(fromOrExpression);
-    return this.unwindPreserveNulls(`$${fromOrExpression.as}`, localField);
+    return this.push(
+      ...op.lookupAndUnwindPreserveNulls(
+        fromOrExpression,
+        localField,
+        foreignField,
+        as,
+        unwindOptions
+      )
+    );
   }
 
   push(...operation) {
@@ -84,10 +163,6 @@ class PipelineBuilder {
     return JSON.parse(JSON.stringify(this._pipeline)); // deepclone
   }
 
-  selfcopy() {
-    return new PipelineBuilder(this.unwrap());
-  }
-
   log(logger = null) {
     if (typeof logger === "function") {
       logger(this.unwrap());
@@ -97,7 +172,7 @@ class PipelineBuilder {
     return this;
   }
 
-  async aggregateWith(model) {
+  aggregateWith(model) {
     return model.aggregate(this._pipeline);
   }
 

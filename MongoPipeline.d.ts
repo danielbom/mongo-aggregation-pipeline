@@ -18,7 +18,7 @@ declare module MongoPipeline {
   }
 
   interface Group extends Any {
-    _id: Any;
+    _id: string | Any;
   }
 
   interface Lookup {
@@ -81,7 +81,18 @@ declare module MongoPipeline {
     project(expression: Any): this;
     unwind(path: string, options: Unwind): this;
 
+    groupFields(_id: string | Any, field: string, ...fields: string[]): this;
+
+    unwindPreserveNulls(path: string, options: Unwind): this;
+
     lookupAndUnwind(
+      fromOrExpression: Lookup | string,
+      localField?: Unwind | string,
+      foreighField?: string,
+      as?: string,
+      unwindOptions?: Unwind
+    ): this;
+    lookupAndUnwindPreserveNulls(
       fromOrExpression: Lookup | string,
       localField?: Unwind | string,
       foreighField?: string,
