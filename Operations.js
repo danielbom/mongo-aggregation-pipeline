@@ -129,14 +129,16 @@ class Operation {
     unwindOptions
   ) {
     if (typeof fromOrExpression === "string") {
-      return [
-        this.lookup(fromOrExpression, localField, foreignField, as),
-        this.unwind(`$${as || localField}`, unwindOptions),
-      ];
+      fromOrExpression = {
+        from: fromOrExpression,
+        localField,
+        foreignField,
+        as: as || localField
+      };
     }
     return [
       this.lookup(fromOrExpression),
-      this.unwind(`$${fromOrExpression.as || fromOrExpression.localField}`, localField),
+      this.unwind(`$${fromOrExpression.as}`, unwindOptions),
     ];
   }
 
@@ -148,14 +150,16 @@ class Operation {
     unwindOptions
   ) {
     if (typeof fromOrExpression === "string") {
-      return [
-        this.lookup(fromOrExpression, localField, foreignField, as),
-        this.unwindPreserveNulls(`$${as || localField}`, unwindOptions),
-      ];
+      fromOrExpression = {
+        from: fromOrExpression,
+        localField,
+        foreignField,
+        as: as || localField
+      };
     }
     return [
       this.lookup(fromOrExpression),
-      this.unwindPreserveNulls(`$${fromOrExpression.as}`, localField),
+      this.unwindPreserveNulls(`$${fromOrExpression.as}`, unwindOptions),
     ];
   }
 
